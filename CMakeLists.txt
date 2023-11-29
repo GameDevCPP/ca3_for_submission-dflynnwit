@@ -73,7 +73,14 @@ set(EXECUTABLES ${EXECUTABLES} Drop_Pod)
 
 add_dependencies(Drop_Pod copy_resources)
 
-set_target_properties(Drop_Pod 
+#copy res to build folder
+add_custom_command(TARGET Drop_Pod POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${PROJECT_SOURCE_DIR}/res"
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}res
+)
+message(STATUS "Copying resources to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}res")
+set_target_properties(Drop_Pod
     PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(Configuration)
 )
