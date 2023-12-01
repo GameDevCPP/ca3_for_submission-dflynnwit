@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include <SFML/System.hpp>
 #include <cmath>
 #include <iomanip>  // std::setprecision

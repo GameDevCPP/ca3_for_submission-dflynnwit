@@ -90,7 +90,7 @@ endif()
 # how to statically link sfml etc
 set_target_properties(DropPod PROPERTIES
         COMPILE_DEFINITIONS SFML_STATIC
-)
+        )
 
 #statically link mingw libs etc.
 if (MINGW)
@@ -104,32 +104,11 @@ if (WIN32)
 endif()
 
 
-# Copy dlls to output directory
-if (WIN32)
-    add_custom_command(TARGET DropPod POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${CMAKE_BINARY_DIR}/_deps/sfml-build/lib"
-            $<TARGET_FILE_DIR:DropPod>)
-endif()
+## Copy dlls to output directory
+#if (WIN32)
+#    add_custom_command(TARGET DropPod POST_BUILD
+#            COMMAND ${CMAKE_COMMAND} -E copy_directory
+#            "${CMAKE_BINARY_DIR}/_deps/sfml-build/lib"
+#            $<TARGET_FILE_DIR:DropPod>)
+#endif()
 
-if (WIN32 AND SFML_BUILD_AUDIO)
-    add_custom_command(TARGET DropPod POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy ${FETCHCONTENT_BASE_DIR}/sfml-src/extlibs/bin/x64/openal32.dll $<TARGET_FILE_DIR:DropPod>
-    )
-endif()
-
-message("SFML_BUILD_AUDIO is:" "${SFML_BUILD_AUDIO}" )
-message("SFML_BUILD_GRAPHICS is:" "${SFML_BUILD_GRAPHICS}" )
-message("SFML_BUILD_WINDOW is:" "${SFML_BUILD_WINDOW}" )
-message("SFML_BUILD_SYSTEM is:" "${SFML_BUILD_SYSTEM}" )
-message("SFML_BUILD_NETWORK is:" "${SFML_BUILD_NETWORK}" )
-message("SFML_BUILD_DOC is:" "${SFML_BUILD_DOC}" )
-message("SFML_BUILD_EXAMPLES is:" "${SFML_BUILD_EXAMPLES}" )
-message("SFML_BUILD_TEST is:" "${SFML_BUILD_TEST}" )
-message("SFML_INSTALL_PKGCONFIG_FILES is:" "${SFML_INSTALL_PKGCONFIG_FILES}" )
-message("FETCHCONTENT_BASE_DIR is:" "${FETCHCONTENT_BASE_DIR}" )
-message("CMAKE_BINARY_DIR is:" "${CMAKE_BINARY_DIR}" )
-# print contents of ${FETCHCONTENT_BASE_DIR}/sfml-src/extlibs/bin/x64/
-file(GLOB_RECURSE DLLS ${FETCHCONTENT_BASE_DIR}/sfml-src/extlibs/bin/x64/*)
-message("DLLS are:" "${DLLS}" )
-# locate all the dlls in the clion mingw bin directory
