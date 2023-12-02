@@ -33,7 +33,7 @@ endif()
 set(OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY})
 
-# Resource copying targets to e.g. Debug/Release directory
+# Resource copying targets
 add_custom_target(copy_resources ALL COMMAND ${CMAKE_COMMAND}
         -E copy_directory
         "${PROJECT_SOURCE_DIR}/res"
@@ -45,7 +45,7 @@ add_custom_target(copy_resources_rootdir ALL COMMAND ${CMAKE_COMMAND}
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/res
 )
 
-#message("Box2d is located at:" "${box2d_SOURCE_DIR}/Box2D" )
+message("Box2d is located at:" "${box2d_SOURCE_DIR}/Box2D" )
 # Engine library
 file(GLOB_RECURSE ENGINE_SOURCES engine/*.cpp engine/*.h)
 add_library(lib_engine STATIC ${ENGINE_SOURCES})
@@ -75,7 +75,10 @@ add_executable(DropPod ${DropPod_SOURCES})
 target_link_libraries(DropPod PRIVATE lib_engine lib_ecm lib_maths sfml-graphics sfml-audio sfml-system sfml-window lib_tile_level_loader )
 add_dependencies(DropPod copy_resources copy_resources_rootdir)
 
-
+# Set properties for executables
+set_target_properties(DropPod
+        PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(Configuration)
+)
 # if win32, copy dlls from _deps/sfml-build/lib
 if(WIN32)
     add_custom_command(TARGET DropPod POST_BUILD
@@ -83,6 +86,22 @@ if(WIN32)
             "${CMAKE_BINARY_DIR}/_deps/sfml-build/lib"
             $<TARGET_FILE_DIR:DropPod>)
 endif()
+
+# how to statically link sfml etc
+set_target_properties(DropPod PROPERTIES
+        COMPILE_DEFINITIONS SFML_STATIC
+)
+
+#statically link mingw libs etc.
+#if (MINGW)
+#    set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
+#endif()
+
+#statically link  openal with sfml and DropPod etc.
+#if (WIN32)
+#    set(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++ -static -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic")
+#
+#endif()
 
 
 # Copy dlls to output directory
@@ -99,3 +118,18 @@ if (WIN32 AND SFML_BUILD_AUDIO)
     )
 endif()
 
+message("SFML_BUILD_AUDIO is:" "${SFML_BUILD_AUDIO}" )
+message("SFML_BUILD_GRAPHICS is:" "${SFML_BUILD_GRAPHICS}" )
+message("SFML_BUILD_WINDOW is:" "${SFML_BUILD_WINDOW}" )
+message("SFML_BUILD_SYSTEM is:" "${SFML_BUILD_SYSTEM}" )
+message("SFML_BUILD_NETWORK is:" "${SFML_BUILD_NETWORK}" )
+message("SFML_BUILD_DOC is:" "${SFML_BUILD_DOC}" )
+message("SFML_BUILD_EXAMPLES is:" "${SFML_BUILD_EXAMPLES}" )
+message("SFML_BUILD_TEST is:" "${SFML_BUILD_TEST}" )
+message("SFML_INSTALL_PKGCONFIG_FILES is:" "${SFML_INSTALL_PKGCONFIG_FILES}" )
+message("FETCHCONTENT_BASE_DIR is:" "${FETCHCONTENT_BASE_DIR}" )
+message("CMAKE_BINARY_DIR is:" "${CMAKE_BINARY_DIR}" )
+# print contents of ${FETCHCONTENT_BASE_DIR}/sfml-src/extlibs/bin/x64/
+file(GLOB_RECURSE DLLS ${FETCHCONTENT_BASE_DIR}/sfml-src/extlibs/bin/x64/*)
+message("DLLS are:" "${DLLS}" )
+# locate all the dlls in the clion mingw bin directory
