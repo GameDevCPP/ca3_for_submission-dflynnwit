@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(DropPod)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 14)  # normally use 17, however, SFML v 2.5.x may not compile
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
@@ -11,7 +11,7 @@ include(FetchContent)
 FetchContent_Declare(
         sfml
         GIT_REPOSITORY https://github.com/SFML/SFML.git
-        GIT_TAG        2.5.x
+        GIT_TAG        2.5.x  # note that you can use the latest 2.6.x
 )
 FetchContent_MakeAvailable(sfml)
 
